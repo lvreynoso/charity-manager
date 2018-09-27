@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="row">
+        <div class="col-auto"><h1>Admin</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">User:</div>
+        <div class="col-auto">{{user.name}}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">Accounts:</div>
+        <div class="col-auto">
+            {{#each accounts}}
+            <div class="row">
+                <div class="col-sm-3">
+                    {{accounts.name}}
+                </div>
+                <div class="col-sm-3">
+                    {{accounts.id}}
+                </div>
+                <div class="col-auto">
+                    {{#each accounts.charities}}
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {{accounts.charities.name}}
+                        </div>
+                        <div class="col-auto">
+                            {{accounts.charities.transactions}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
