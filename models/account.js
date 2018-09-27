@@ -1,9 +1,8 @@
 // account model
 import mongoose from 'mongoose';
-// import Donation from './donation.js';
-// import Recurring from './recurring.js';
 const Schema = mongoose.Schema;
 
+// subdocument of Account
 var DonationSchema = new Schema({
     account: { type: Schema.Types.ObjectId,  ref: 'Account' },
     amount: { type: Number, min: 0.01},
@@ -13,6 +12,7 @@ var DonationSchema = new Schema({
 
 }, { timestamps: true });
 
+// subdocument of Account
 var RecurringSchema = new Schema({
     account: { type: Schema.Types.ObjectId,  ref: 'Account' },
     amount: { type: Number, min: 0.01},
