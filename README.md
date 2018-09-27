@@ -6,3 +6,5 @@ Super secret contractor project.
 * Clone project and run `npm install`
 * Make sure `mongod` is running
 * Start with `npm start`.
+## Browser Access
+`http://localhost:3000/`
