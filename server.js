@@ -9,7 +9,7 @@ import handlebars from 'express-handlebars';
 // controllers
 import index from './controllers/index.js'
 import admin from './controllers/admin.js'
-import portfolio from './controllers/portfolio.js'
+import transactions from './controllers/transactions.js'
 import dashboard from './controllers/dashboard.js'
 
 // models
@@ -46,7 +46,7 @@ var server = app.listen(3000, () => {
 // stick the needle in
 index(app, database);
 admin(app, database);
-portfolio(app, database);
+transactions(app, database);
 dashboard(app, database);
 
 // for Mocha/Chai test purposes
