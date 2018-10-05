@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "babel-node": "babel-node --presets=env",
+        "babel-node": "NODE_ENV=development babel-node --presets=env",
         "start": "nodemon --exec npm run babel-node -- ./server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -31,5 +31,8 @@
         "presets": [
             "env"
         ]
+    },
+    "devDependencies": {
+        "dotenv": "^6.0.0"
     }
 }

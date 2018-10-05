@@ -22,6 +22,7 @@ var RecurringSchema = new Schema({
 
 }, { timestamps: true });
 
+// main document
 var AccountSchema = new Schema({
     name: {
         first: String,
@@ -35,4 +36,5 @@ AccountSchema.virtual('name.full').get(function () {
     return this.name.first + ' ' + this.name.last;
 })
 
-export const Account = mongoose.model('Account', AccountSchema);
+let Account = mongoose.model('Account', AccountSchema);
+export default Account;

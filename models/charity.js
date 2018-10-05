@@ -6,4 +6,5 @@ var CharitySchema = new Schema({
     name: String
 });
 
-export const Charity = mongoose.model('Charity', CharitySchema);
+let Charity = mongoose.model('Charity', CharitySchema);
+export default Charity;

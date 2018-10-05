@@ -17,4 +17,5 @@ UserSchema.virtual('name.full').get(function () {
     return this.name.first + ' ' + this.name.last;
 })
 
-export const User = mongoose.model('User', UserSchema)
+let User = mongoose.model('User', UserSchema);
+export default User;
