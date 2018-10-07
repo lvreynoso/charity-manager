@@ -52,4 +52,11 @@ export default function(app, database) {
             console.log(err.message);
         })
     })
+
+    app.delete('/accounts/:id', (req, res) => {
+        var query = { _id: req.params.id }
+        database.account.findOneAndDelete(query).then(account => {
+            res.redirect(`/accounts`)
+        })
+    })
 }
