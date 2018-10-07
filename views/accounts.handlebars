@@ -1,0 +1,13 @@
+<!-- accounts.handlebars -->
+
+<div class="container">
+    <div class="row">
+        <h1>Accounts</h1>
+    </div>
+    <div class="row">
+        <h4><a href="/accounts/new">New Account</a></h4>
+    </div>
+    {{#each accounts}}
+        <h3><a href="/accounts/{{this._id}}">{{this.name.full}}</a></h3>
+    {{/each}}
+</div>

@@ -10,6 +10,7 @@ import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import handlebars from 'express-handlebars'
 import path from 'path'
+import methodOverride from 'method-override'
 
 // controllers
 import index from './controllers/index.js'
@@ -32,6 +33,9 @@ app.engine('handlebars', handlebars({
     defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
+
+// clunky HTTP method fix
+app.use(methodOverride('_method'))
 
 // connect to our database
 mongoose.connect('mongodb://localhost/charity-manager', {
@@ -59,4 +63,4 @@ dashboard(app, database);
 accounts(app, database)
 
 // for Mocha/Chai test purposes
-export { server };
+export default server;

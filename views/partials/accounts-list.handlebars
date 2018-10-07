@@ -1,0 +1,14 @@
+<!-- accounts-list.handlebars -->
+
+<div class="row">
+    <div class="col-12">
+        <h3><a href="/accounts/{{this._id}}">{{this.name.full}}</a></h3>
+        <h6>Transactions</h6>
+        {{> transaction-table}}
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        {{> transaction-form}}
+    </div>
+</div>

@@ -14,9 +14,12 @@ export default function(app, database) {
 
     // resourceful create
     app.post('/transactions', (req, res) => {
-        database.account.findById(req.accountId).then(account => {
-            account.transactions.create(req.transaction).then(transaction => {
-                res.redirect(`/transactions/${transaction._id}`)
+        database.account.findById(req.body.account).then(account => {
+            console.log(req.body);
+            account.donations.push(req.body);
+            account.save().then(transaction => {
+                // res.redirect(`/transactions/${transaction._id}`)
+                res.redirect(`/accounts/${req.body.account}`)
             }).catch(err => {
                 console.log(err.message);
             })
@@ -62,7 +65,7 @@ export default function(app, database) {
         database.account.findById(req.accountId).then(account => {
             account.transactions.findById(req.params.id).then(transaction => {
                 transaction = req.body;
-                transaction.save().then(transaction => {
+                account.save().then(transaction => {
                     res.redirect(`/transactions/${req.params.id}`)
                 }).catch(err => {
                     console.log(err.message);
@@ -76,10 +79,11 @@ export default function(app, database) {
     })
 
     // resourceful destroy
-    app.delete('/transactions/:id', (req, res) => {
-        database.account.findById(req.accountId).then(account => {
-            account.transactions.findOneAndDelete({ _id: req.params.id }).then(transaction => {
-                res.redirect('/transactions')
+    app.delete('/accounts/:accountId/transactions/:id', (req, res) => {
+        database.account.findById(req.params.accountId).then(account => {
+            account.donations.id(req.params.id).remove();
+            account.save().then(response => {
+                res.redirect(`/accounts/${req.params.accountId}`)
             }).catch(err => {
                 console.log(err.message);
             })
@@ -87,4 +91,6 @@ export default function(app, database) {
             console.log(err.message);
         })
     })
+
+
 }

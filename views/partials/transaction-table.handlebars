@@ -1,0 +1,30 @@
+<table class="table">
+    <thead>
+        <th scope="col">Type</th>
+        <th scope="col">Account</th>
+        <th scope="col">_id</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Date</th>
+        <th scope="col">Charity</th>
+        <th scope="col">Recurring</th>
+    </thead>
+    <tbody>
+        {{#each this.donations}}
+            <tr>
+                <td>Donation</td>
+                <td>{{this.account}}</td>
+                <td>{{this._id}}</td>
+                <td>${{this.amount}}</td>
+                <td>{{this.date}}</td>
+                <td>{{this.charity}}</td>
+                <td>{{this.recurring}}</td>
+                <form action="/accounts/{{account._id}}/transactions/{{this._id}}?_method=DELETE" method="POST">
+                    <fieldset>
+                        <input type="hidden" name="accountId" value={{this.account}}>
+                        <td><button class="form-group btn btn-secondary" type="submit" name="donationId" value="{{this._id}}">Delete</button>
+                    </fieldset>
+                </form>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

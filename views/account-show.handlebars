@@ -1,0 +1,15 @@
+<!-- account-show.handlebars -->
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h3>{{account.name.full}}</h3>
+            <h6>Transactions</h6>
+            {{> transaction-table account}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {{> transaction-form account}}
+        </div>
+    </div>
+</div>

@@ -1,5 +1,4 @@
-// static.js
-// for our static pages
+// admin.js
 
 export default function(app, database) {
     app.get('/admin', (req, res) => {

@@ -1,0 +1,24 @@
+<!-- transaction-form.handlebars -->
+
+<form action="/transactions" method="post">
+    <fieldset>
+        <legend>New Transaction</legend>
+        <input type="hidden" name="account" value={{this._id}}>
+        <div class="form-group">
+            <label for="amount">Amount</label><br>
+            <input id="amount" type="text" name="amount" value="{{amount}}"/>
+        </div>
+            <div class="form-group">
+                <label for="charity">Charity</label><br>
+                <input id="charity" type="text" name="charity" value="{{charity}}"/>
+        </div>
+        <div class="form-group">
+            <label for="recurring">Recurring</label><br>
+            <input type="radio" name="recurring" value=false checked>No<br>
+            <input type="radio" name="recurring" value=true>Yes<br>
+        </div>
+    </fieldset>
+    <div class="form-group">
+        <button class="btn btn-primary" type="submit">Save Transaction</button>
+    </div>
+</form>
