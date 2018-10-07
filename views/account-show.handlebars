@@ -9,7 +9,10 @@
     </div>
     <div class="row">
         <div class="col-12">
-            {{> transaction-form account}}
+            <form action="/transactions" method="post">
+                <input type="hidden" name="account" value={{account._id}}>
+                {{> transaction-form}}
+            </form>
         </div>
     </div>
 </div>

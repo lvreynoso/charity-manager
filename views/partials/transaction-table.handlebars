@@ -18,6 +18,11 @@
                 <td>{{this.date}}</td>
                 <td>{{this.charity}}</td>
                 <td>{{this.recurring}}</td>
+                <form class="form-group" action="/accounts/{{account._id}}/transactions/{{this._id}}/edit" method="GET">
+                    <fieldset>
+                        <td><button class="btn btn-secondary" type="submit" name="button">Edit</button></td>
+                    </fieldset>
+                </form>
                 <form action="/accounts/{{account._id}}/transactions/{{this._id}}?_method=DELETE" method="POST">
                     <fieldset>
                         <input type="hidden" name="accountId" value={{this.account}}>

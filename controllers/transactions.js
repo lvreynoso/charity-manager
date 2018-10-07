@@ -30,6 +30,7 @@ export default function(app, database) {
 
     // resourceful show
     app.get('/transactions/:id', (req, res) => {
+        console.log("transaction show");
         database.account.findById(req.accountId).then(account => {
             account.transactions.findById(req.params.id).then(transaction => {
                 res.render('transactions-show', {
@@ -45,15 +46,13 @@ export default function(app, database) {
     })
 
     // resourceful edit
-    app.get('/transactions/:id/edit', (req, res) => {
-        database.account.findById(req.accountId).then(account => {
-            account.transactions.findById(req.params.id).then(transaction => {
-                res.render('transactions-edit', {
-                    account: account,
-                    transaction: transaction
-                })
-            }).catch(err => {
-                console.log(err.message);
+    app.get('/accounts/:accountId/transactions/:id/edit', (req, res) => {
+        console.log("transaction edit");
+        database.account.findById(req.params.accountId).then(account => {
+            var transaction = account.donations.id(req.params.id);
+            res.render('transactions-edit', {
+                account: account,
+                transaction: transaction
             })
         }).catch(err => {
             console.log(err.message);
@@ -61,17 +60,13 @@ export default function(app, database) {
     })
 
     // resourceful update
-    app.put('/transactions/:id', (req, res) => {
-        database.account.findById(req.accountId).then(account => {
-            account.transactions.findById(req.params.id).then(transaction => {
-                transaction = req.body;
-                account.save().then(transaction => {
-                    res.redirect(`/transactions/${req.params.id}`)
-                }).catch(err => {
-                    console.log(err.message);
-                })
-            }).catch(err => {
-                console.log(err.message);
+    app.put('/accounts/:accountId/transactions/:id', (req, res) => {
+        console.log("transaction update");
+        database.account.findById(req.params.accountId).then(account => {
+            var editedDonation = account.donations.id(req.params.id)
+            editedDonation.set(req.body)
+            account.save().then(response => {
+                res.redirect(`/accounts/${req.params.accountId}`);
             })
         }).catch(err => {
             console.log(err.message);
