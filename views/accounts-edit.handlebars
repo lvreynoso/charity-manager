@@ -1,0 +1,14 @@
+<!-- accounts-edit.handlebars -->
+
+<div class="container">
+    <div class="row">
+        <h1>Edit Account</h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form action="/accounts/{{account._id}}?_method=PUT" method="post">
+                {{> accounts-form account}}
+            </form>
+        </div>
+    </div>
+</div>

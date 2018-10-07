@@ -17,7 +17,26 @@ export default function(app, database) {
     // show one account
     app.get('/accounts/:id', (req, res) => {
         database.account.findById(req.params.id).then(account => {
-            res.render('account-show', { account: account })
+            res.render('accounts-show', { account: account })
+        })
+    })
+
+    // edit account information
+    app.get('/accounts/:id/edit', (req, res) => {
+        database.account.findById(req.params.id).then(account => {
+            res.render('accounts-edit', { account: account })
+        })
+    })
+
+    // update account information
+    app.put('/accounts/:id', (req, res) => {
+        console.log(req.body);
+        var transformedEntry = { name: {} }
+        transformedEntry.name = { first: req.body.firstName, last: req.body.lastName}
+        console.log(transformedEntry);
+        var query = { _id: req.params.id }
+        database.account.findOneAndUpdate(query, transformedEntry).then(account => {
+            res.redirect(`/accounts/${req.params.id}`)
         })
     })
 
