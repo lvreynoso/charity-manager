@@ -15,7 +15,7 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <form action="/transactions" method="post">
+            <form action="/accounts/{{account.slug}}/transactions" method="post">
                 <input type="hidden" name="account" value={{account._id}}>
                 {{> transaction-form}}
             </form>

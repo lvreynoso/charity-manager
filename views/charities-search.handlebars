@@ -1,0 +1,41 @@
+<!-- charities-search.handlebars -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Search Results</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <form class="form-group" action="/charities/search" method="post">
+                <fieldset>
+                    <input id="search" type="text" name="search" value="">
+                    <button type="submit" class="btn btn-primary" name="button">Search</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    {{#if error}}
+    <div class="row">
+        <div class="col-lg-12">
+            <h4>No results found for {{query}}</h4>
+        </div>
+    </div>
+    {{/if}}
+    <div class="row">
+        <div class="col-lg-12">
+            {{#each search.data}}
+            <div class="row">
+                <div class="col-lg-12"><p><strong>{{this.charityName}}</strong><br>
+                    {{this.charityNavigatorURL}}<br>
+                    {{{this.mission}}}<br>
+                    {{this.websiteURL}}<br>
+                    {{this.tagLine}}<br>
+                    {{this.ein}}<br>
+                </p></div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>

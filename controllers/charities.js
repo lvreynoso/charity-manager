@@ -7,6 +7,20 @@ export default function(app, database, modules) {
         res.render('charities')
     })
 
+    // show search results
+    app.post('/charities/search', (req, res) => {
+        console.log(req.body);
+        modules.axios.get(modules.charityNavigator.collection('10', '1', req.body.search))
+        .then(search => {
+            res.render('charities-search', { search: search })
+        })
+        .catch(error => {
+            res.render('charities-search', { error: error, query: req.body.search })
+        })
+    })
+
+
+    // test our charity navigator api wrapper
     app.get('/charities/test', (req, res) => {
         let test = { result: {}, collection: {}, organization: {} };
         test.result.query = modules.charityNavigator.test();
