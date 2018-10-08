@@ -1,6 +1,6 @@
 // accounts.js
 
-export default function(app, database) {
+export default function(app, database, modules) {
 
     // show all accounts
     app.get('/accounts', (req, res) => {
@@ -15,39 +15,50 @@ export default function(app, database) {
     })
 
     // show one account
-    app.get('/accounts/:id', (req, res) => {
-        database.account.findById(req.params.id).then(account => {
+    app.get('/accounts/:slug', (req, res) => {
+        let query = { slug: req.params.slug }
+        database.account.findOne(query).then(account => {
             res.render('accounts-show', { account: account })
         })
     })
 
     // edit account information
-    app.get('/accounts/:id/edit', (req, res) => {
-        database.account.findById(req.params.id).then(account => {
+    app.get('/accounts/:slug/edit', (req, res) => {
+        let query = { slug: req.params.slug }
+        database.account.findOne(query).then(account => {
             res.render('accounts-edit', { account: account })
         })
     })
 
     // update account information
-    app.put('/accounts/:id', (req, res) => {
-        console.log(req.body);
+    app.put('/accounts/:slug', (req, res) => {
+        // transform req.body to conform to our database model
         var transformedEntry = { name: {} }
         transformedEntry.name = { first: req.body.firstName, last: req.body.lastName}
-        console.log(transformedEntry);
-        var query = { _id: req.params.id }
-        database.account.findOneAndUpdate(query, transformedEntry).then(account => {
-            res.redirect(`/accounts/${req.params.id}`)
+        var query = { _id: req.body.mongoId }
+        database.account.findOne(query).then(account => {
+            account.set(transformedEntry)
+            // create a new slug for the updated account
+            let mongoId = String(account._id).substring(String(account._id).length - 4)
+            account.slug = modules.slug(account.name.full + ' ' + mongoId)
+            account.save().then(account => {
+                res.redirect(`/accounts/${account.slug}`)
+            })
         })
     })
 
     // create account
     app.post('/accounts', (req, res) => {
-        console.log(req.body);
+        // transform req.body to conform to our database model
         var transformedEntry = { name: {} }
         transformedEntry.name = { first: req.body.firstName, last: req.body.lastName}
-        console.log(transformedEntry);
         database.account.create(transformedEntry).then(account => {
-            res.redirect('/accounts')
+            // create a slug for the new account
+            let mongoId = String(account._id).substring(String(account._id).length - 4)
+            account.slug = modules.slug(account.name.full + ' ' + mongoId)
+            account.save().then(account => {
+                res.redirect(`/accounts`)
+            })
         }).catch(err => {
             console.log(err.message);
         })

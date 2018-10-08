@@ -1,0 +1,72 @@
+<!-- charities.handlebars -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12"><h1>Charities Test</h1></div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12"><h4>Test(): </h4></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"><h6>API Query: </h6></div>
+                <div class="col-lg-10"><h6>{{test.result.query}}</h6></div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12"><h4>Collection(): </h4></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"><h6>API Query: </h6></div>
+                <div class="col-lg-10"><h6>{{test.collection.query}}</h6></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"><h6>API Response: </h6></div>
+                <div class="col-lg-10">
+                    {{#each test.collection.response.data}}
+                    <div class="row">
+                        <div class="col-lg-12"><p><strong>{{this.charityName}}</strong><br>
+                            {{this.charityNavigatorURL}}<br>
+                            {{{this.mission}}}<br>
+                            {{this.websiteURL}}<br>
+                            {{this.tagLine}}<br>
+                            {{this.ein}}<br>
+                        </p></div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-12"><h4>Organization(): </h4></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"><h6>API Query: </h6></div>
+                <div class="col-lg-10"><h6>{{test.organization.query}}</h6></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"><h6>API Response: </h6></div>
+                {{#with test.organization.response.data}}
+                <div class="col-lg-10"><p><strong>{{charityName}}</strong><br>
+                    {{charityNavigatorURL}}<br>
+                    {{{mission}}}<br>
+                    {{websiteURL}}<br>
+                    {{tagLine}}<br>
+                    {{ein}}<br>
+                </p>
+                </div>
+                {{/with}}
+            </div>
+        </div>
+    </div>
+</div>

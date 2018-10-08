@@ -28,12 +28,15 @@ var AccountSchema = new Schema({
         last: String
     },
     donations: [DonationSchema],
-    recurrings: [RecurringSchema] // templates for recurring donations
+    recurrings: [RecurringSchema], // templates for recurring donations
+    slug: String
 });
 
 AccountSchema.virtual('name.full').get(function () {
     return this.name.first + ' ' + this.name.last;
 })
+
+
 
 let Account = mongoose.model('Account', AccountSchema);
 export default Account;

@@ -11,6 +11,8 @@ import mongoose from 'mongoose'
 import handlebars from 'express-handlebars'
 import path from 'path'
 import methodOverride from 'method-override'
+import slug from 'slug'
+import axios from 'axios'
 
 // controllers
 import index from './controllers/index.js'
@@ -18,21 +20,31 @@ import admin from './controllers/admin.js'
 import accounts from './controllers/accounts.js'
 import transactions from './controllers/transactions.js'
 import dashboard from './controllers/dashboard.js'
+import charities from './controllers/charities.js'
 
 // models
 import Account from './models/account.js'
-import Charity from './models/charity.js'
 import User from './models/user.js'
+
+// library
+import CharityNavigator from './lib/charity-navigator.js'
+let charityNav = new CharityNavigator(process.env.CHARITY_NAV_APP_ID,
+    process.env.CHARITY_NAV_API_KEY, process.env.CHARITY_NAV_BASE_URL)
+
+// handlebars helpers
+import exphbsConfig from './views/config/exphbs-config.js'
+let exphbs = handlebars.create(exphbsConfig);
 
 // set our express options
 let app = express();
 app.set('port', process.env.PORT || 3000);
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.engine('handlebars', handlebars({
-    defaultLayout: 'main'
+app.use(bodyParser.urlencoded({
+    extended: true
 }));
+app.use(bodyParser.json());
+app.engine('handlebars', exphbs.engine);
 app.set('view engine', 'handlebars');
+app.use(express.static('public'));
 
 // clunky HTTP method fix
 app.use(methodOverride('_method'))
@@ -46,7 +58,12 @@ mongoose.connect('mongodb://localhost/charity-manager', {
 var database = {
     user: User,
     account: Account,
-    charity: Charity,
+}
+
+var modules = {
+    slug: slug,
+    axios: axios,
+    charityNavigator: charityNav
 }
 
 // face the world
@@ -56,11 +73,12 @@ var server = app.listen(hotPort, () => {
 })
 
 // stick the needle in
-index(app, database);
-admin(app, database);
-transactions(app, database);
-dashboard(app, database);
-accounts(app, database)
+index(app, database, modules);
+admin(app, database, modules);
+transactions(app, database, modules);
+dashboard(app, database, modules);
+accounts(app, database, modules);
+charities(app, database, modules);
 
 // for Mocha/Chai test purposes
 export default server;

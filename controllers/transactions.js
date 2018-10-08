@@ -1,7 +1,7 @@
 // portfolio.js
 // top priority: minimum viable product page
 
-export default function(app, database) {
+export default function(app, database, modules) {
     // resourceful index
     app.get('/transactions', (req, res) => {
         res.render('transactions');
@@ -13,13 +13,18 @@ export default function(app, database) {
     })
 
     // resourceful create
-    app.post('/transactions', (req, res) => {
+    app.post('/accounts/:slug/transactions', (req, res) => {
         database.account.findById(req.body.account).then(account => {
-            console.log(req.body);
-            account.donations.push(req.body);
+            var newTransaction = req.body;
+
+            // date fixing code
+            if (req.body.fallback) {
+                newTransaction.date = new Date(req.body.day + ' ' + req.body.month + ', ' + req.body.year);
+            }
+
+            account.donations.push(newTransaction);
             account.save().then(transaction => {
-                // res.redirect(`/transactions/${transaction._id}`)
-                res.redirect(`/accounts/${req.body.account}`)
+                res.redirect(`/accounts/${account.slug}`)
             }).catch(err => {
                 console.log(err.message);
             })
@@ -30,7 +35,7 @@ export default function(app, database) {
 
     // resourceful show
     app.get('/transactions/:id', (req, res) => {
-        console.log("transaction show");
+        //console.log("transaction show");
         database.account.findById(req.accountId).then(account => {
             account.transactions.findById(req.params.id).then(transaction => {
                 res.render('transactions-show', {
@@ -46,9 +51,10 @@ export default function(app, database) {
     })
 
     // resourceful edit
-    app.get('/accounts/:accountId/transactions/:id/edit', (req, res) => {
-        console.log("transaction edit");
-        database.account.findById(req.params.accountId).then(account => {
+    app.get('/accounts/:slug/transactions/:id/edit', (req, res) => {
+        //console.log("transaction edit");
+        let query = { slug: req.params.slug }
+        database.account.findOne(query).then(account => {
             var transaction = account.donations.id(req.params.id);
             res.render('transactions-edit', {
                 account: account,
@@ -60,13 +66,21 @@ export default function(app, database) {
     })
 
     // resourceful update
-    app.put('/accounts/:accountId/transactions/:id', (req, res) => {
-        console.log("transaction update");
-        database.account.findById(req.params.accountId).then(account => {
+    app.put('/accounts/:slug/transactions/:id', (req, res) => {
+        //console.log("transaction update");
+        database.account.findById(req.body.accountId).then(account => {
             var editedDonation = account.donations.id(req.params.id)
-            editedDonation.set(req.body)
+            var updatedInfo = req.body;
+
+            // date fixing code
+            if (req.body.fallback) {
+                updatedInfo.date = new Date(req.body.day + ' ' + req.body.month + ', ' + req.body.year);
+            }
+
+            editedDonation.set(updatedInfo);
+            editedDonation.markModified('date');
             account.save().then(response => {
-                res.redirect(`/accounts/${req.params.accountId}`);
+                res.redirect(`/accounts/${account.slug}`);
             })
         }).catch(err => {
             console.log(err.message);
@@ -74,11 +88,11 @@ export default function(app, database) {
     })
 
     // resourceful destroy
-    app.delete('/accounts/:accountId/transactions/:id', (req, res) => {
-        database.account.findById(req.params.accountId).then(account => {
+    app.delete('/accounts/:slug/transactions/:id', (req, res) => {
+        database.account.findById(req.body.accountId).then(account => {
             account.donations.id(req.params.id).remove();
             account.save().then(response => {
-                res.redirect(`/accounts/${req.params.accountId}`)
+                res.redirect(`/accounts/${account.slug}`)
             }).catch(err => {
                 console.log(err.message);
             })

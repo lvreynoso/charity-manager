@@ -1,4 +1,5 @@
 <!-- transactions-edit.handlebars -->
-<form class="form-group" action="/accounts/{{account._id}}/transactions/{{transaction._id}}?_method=PUT" method="post">
+<form class="form-group" action="/accounts/{{account.slug}}/transactions/{{transaction._id}}?_method=PUT" method="post">
+    <input type="hidden" name="accountId" value="{{account._id}}">
     {{> transaction-form transaction}}
 </form>

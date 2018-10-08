@@ -6,7 +6,8 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <form action="/accounts/{{account._id}}?_method=PUT" method="post">
+            <form action="/accounts/{{account.slug}}?_method=PUT" method="post">
+                <input type="hidden" name="mongoId" value="{{account._id}}">
                 {{> accounts-form account}}
             </form>
         </div>

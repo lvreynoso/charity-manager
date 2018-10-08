@@ -1,6 +1,6 @@
 // admin.js
 
-export default function(app, database) {
+export default function(app, database, modules) {
     app.get('/admin', (req, res) => {
         // scour the database
         database.account.find().then(accounts => {
