@@ -1,5 +1,4 @@
-// portfolio.js
-// top priority: minimum viable product page
+// transactions.js
 
 export default function(app, database, modules) {
     // resourceful index
@@ -8,8 +7,11 @@ export default function(app, database, modules) {
     })
 
     // resourceful new
-    app.get('/transactions/new', (req, res) => {
-        res.render('transactions-new')
+    app.get('/accounts/:slug/transactions/new', (req, res) => {
+        let query = { slug: req.params.slug }
+        database.account.findOne(query).then(account => {
+            res.render('transactions-new', { account: account })
+        })
     })
 
     // resourceful create

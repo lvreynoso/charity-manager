@@ -1,0 +1,35 @@
+<!-- charities-show.handlebars -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>{{charity.charityName}}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h6><em>{{charity.tagLine}}</em></h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h6><a href="{{charity.websiteURL}}" target="_blank">{{charity.websiteURL}}</a></h6>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p class="text-justify">{{charity.mission}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 text-center">
+            <form class="form-group" action="/charities/{{charity.ein}}/donate" method="get">
+                <button type="submit" class="btn btn-tertiary" name="donate">Donate!</button>
+            </form>
+        </div>
+    </div>
+
+
+</div>

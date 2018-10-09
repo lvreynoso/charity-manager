@@ -9,16 +9,11 @@
     <br>
     <div class="row">
         <div class="col-12">
-            <h6>Transactions</h6>
-            {{> transaction-table account}}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <form action="/accounts/{{account.slug}}/transactions" method="post">
-                <input type="hidden" name="account" value={{account._id}}>
-                {{> transaction-form}}
+            <h5>Transactions</h5><br>
+            <form class="form-group" action="/accounts/{{account.slug}}/transactions/new" method="get">
+            <h6><button class="btn btn-primary" type="submit" name="newTransaction">New Transaction</button></h6>
             </form>
+            {{> transaction-table account}}
         </div>
     </div>
     <hr>
