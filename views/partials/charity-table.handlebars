@@ -1,0 +1,16 @@
+<!-- charity-table.handlebars -->
+
+<div class="row">
+    {{#each this.charities}}
+    <div class="col-lg-4">
+        <h6>{{this.name}}</h6>
+        EIN: {{this.ein}}<br>
+        <form action="/accounts/{{../slug}}/transactions/new" method="post">
+            <input type="hidden" name="name" value="{{this.name}}">
+            <input type="hidden" name="ein" value="{{this.ein}}">
+            <input type="hidden" name="charityId" value="{{this._id}}">
+            <button type="submit" class="btn btn-secondary" name="button">Donate</button>
+        </form><br>
+    </div>
+    {{/each}}
+</div>

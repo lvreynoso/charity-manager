@@ -7,7 +7,9 @@ var DonationSchema = new Schema({
     account: { type: Schema.Types.ObjectId,  ref: 'Account' },
     amount: { type: Number, min: 0.01},
     date: { type: Date, default: Date.now },
-    charity: String, //{ type: Schema.Types.ObjectId, ref: 'Charity' },
+    charity: { type: Schema.Types.ObjectId, ref: 'Charity' },
+    charityName: String,
+    ein: Number,
     recurring: Boolean
 
 }, { timestamps: true });
@@ -27,6 +29,7 @@ var AccountSchema = new Schema({
         first: String,
         last: String
     },
+    charities: [{ type: Schema.Types.ObjectId, ref: 'Charity'}],
     donations: [DonationSchema],
     recurrings: [RecurringSchema], // templates for recurring donations
     slug: String

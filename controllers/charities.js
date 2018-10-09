@@ -10,13 +10,18 @@ export default function(app, database, modules) {
     // show search results
     app.post('/charities/search', (req, res) => {
         modules.axios.get(modules.charityNavigator.collection('10', '1', req.body.search))
-        .then(search => {
-            res.render('charities-search', { search: search })
-        })
-        .catch(error => {
-            console.log(error);
-            res.render('charities-search', { error: error, query: req.body.search })
-        })
+            .then(search => {
+                res.render('charities-search', {
+                    search: search
+                })
+            })
+            .catch(error => {
+                console.log(error);
+                res.render('charities-search', {
+                    error: error,
+                    query: req.body.search
+                })
+            })
     })
 
     // show details for a single charity
@@ -25,75 +30,117 @@ export default function(app, database, modules) {
             next();
         }
         modules.axios.get(modules.charityNavigator.organization(req.params.ein))
-        .then(response => {
-            res.render('charities-show', { charity: response.data })
-        })
-        .catch(error => {
-            console.log(error);
-        })
-    })
-
-    // make a donation to a single charity
-    app.get('/charities/:ein/donate', (req, res) => {
-        modules.axios.get(modules.charityNavigator.organization(req.params.ein))
-        .then(response => {
-            let charity = response.data
-            charity.charity = response.data.charityName
-            database.account.find().then(accounts => {
-                res.render('charities-donate', { charity: charity, accounts: accounts })
+            .then(response => {
+                database.account.find().then(accounts => {
+                    res.render('charities-show', {
+                        charity: response.data,
+                        accounts: accounts
+                    })
+                })
             })
             .catch(error => {
                 console.log(error);
             })
-        })
     })
 
-    // submit donation to that charity
-    app.post('/charities/:ein/donate', (req, res) => {
-        let query = { slug: req.body.slug }
-        delete req.body['slug'];
-        database.account.findOne(query).then(account => {
-            var newTransaction = req.body;
-
-            // date fixing code
-            if (req.body.fallback) {
-                newTransaction.date = new Date(req.body.day + ' ' + req.body.month + ', ' + req.body.year);
+    // add a charity to an account
+    app.post('/charities/:ein/add', (req, res) => {
+        // check if we already have the charity in the local database
+        let charityQuery = {
+            ein: req.params.ein
+        }
+        database.charity.countDocuments(charityQuery)
+        .then(count => {
+            if (count == 0) {
+                let newCharity = { name: req.body.charityName, ein: req.params.ein }
+                database.charity.create(newCharity)
+                .then(charity => {
+                    addToAccount(charity)
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            } else {
+                database.charity.findOne(charityQuery)
+                .then(charity => {
+                    addToAccount(charity)
+                })
+                .catch(error => {
+                    console.log(error);
+                })
             }
-
-            account.donations.push(newTransaction);
-            account.save().then(transaction => {
-                res.redirect(`/accounts/${account.slug}`)
-            }).catch(err => {
-                console.log(err.message);
-            })
-        }).catch(err => {
-            console.log(err.message);
         })
+        .catch(error => {
+            console.log(error);
+        })
+
+        // associate the charity with the account
+        function addToAccount(charity) {
+            let accountQuery = { slug: req.body.slug }
+            database.account.findOne(accountQuery)
+            .populate('charities')
+            .then(account => {
+                // check if the charity is already associated with the account
+                let uniqueCharity = true
+                account.charities.forEach(function(element) {
+                    if (String(element._id) == String(charity._id)) {
+                        uniqueCharity = false
+                    }
+                })
+                if (uniqueCharity) {
+                    account.charities.push(charity)
+                }
+                account.save()
+                .then(savedAccount => {
+                    redirectToAccount(account.slug)
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        }
+
+        function redirectToAccount(slug) {
+            res.redirect(`/accounts/${slug}`)
+        }
     })
 
     // test our charity navigator api wrapper
     app.get('/charities/test', (req, res) => {
-        let test = { result: {}, collection: {}, organization: {} };
+        let test = {
+            result: {},
+            collection: {},
+            organization: {}
+        };
         test.result.query = modules.charityNavigator.test();
         test.collection.query = modules.charityNavigator.collection('10', '1', 'fire')
         modules.axios.get(modules.charityNavigator.collection('10', '1', 'fire'))
-        .then(collection => {
-            test.collection.response = collection;
-            test.organization.query = modules.charityNavigator.organization('411867244');
-            modules.axios.get(modules.charityNavigator.organization('411867244')) // test ein
-            .then(organization => {
-                test.organization.response = organization;
-                res.render('charities-test', { test: test })
+            .then(collection => {
+                test.collection.response = collection;
+                test.organization.query = modules.charityNavigator.organization('411867244');
+                modules.axios.get(modules.charityNavigator.organization('411867244')) // test ein
+                    .then(organization => {
+                        test.organization.response = organization;
+                        res.render('charities-test', {
+                            test: test
+                        })
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        test.organization.response = String(error.response.status + ' ' + error.response.statusText)
+                        res.render('charities-test', {
+                            test: test
+                        })
+                    })
             })
             .catch(error => {
                 console.log(error);
-                test.organization.response = String(error.response.status + ' ' + error.response.statusText)
-                res.render('charities-test', { test: test })
+                res.render('charities-test', {
+                    test: test
+                })
             })
-        })
-        .catch(error => {
-            console.log(error);
-            res.render('charities-test', { test: test })
-        })
     })
 }

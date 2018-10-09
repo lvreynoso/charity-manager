@@ -14,6 +14,15 @@ export default function(app, database, modules) {
         })
     })
 
+    // a truly great artist knows when to break convention
+    app.post('/accounts/:slug/transactions/new', (req, res) => {
+        let query = { slug: req.params.slug }
+        let charity = { _id: req.body._id, charityName: req.body.name, ein: req.body.ein }
+        database.account.findOne(query).then(account => {
+            res.render('transactions-new', { account: account, charity: charity })
+        })
+    })
+
     // resourceful create
     app.post('/accounts/:slug/transactions', (req, res) => {
         database.account.findById(req.body.account).then(account => {
@@ -25,7 +34,7 @@ export default function(app, database, modules) {
             }
 
             account.donations.push(newTransaction);
-            account.save().then(transaction => {
+            account.save().then(savedAccount => {
                 res.redirect(`/accounts/${account.slug}`)
             }).catch(err => {
                 console.log(err.message);

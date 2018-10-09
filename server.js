@@ -25,6 +25,7 @@ import charities from './controllers/charities.js'
 // models
 import Account from './models/account.js'
 import User from './models/user.js'
+import Charity from './models/charity.js'
 
 // library
 import CharityNavigator from './lib/charity-navigator.js'
@@ -58,6 +59,7 @@ mongoose.connect('mongodb://localhost/charity-manager', {
 var database = {
     user: User,
     account: Account,
+    charity: Charity,
 }
 
 var modules = {

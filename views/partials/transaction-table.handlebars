@@ -12,7 +12,7 @@
                 <td>Donation</td>
                 <td>${{this.amount}}</td>
                 <td>{{dateCropper this.date}}</td>
-                <td>{{this.charity}}</td>
+                <td><a href="/charities/{{this.ein}}">{{this.charityName}}</a></td>
                 <td>{{this.recurring}}</td>
                 <form class="form-group" action="/accounts/{{../slug}}/transactions/{{this._id}}/edit" method="GET">
                     <fieldset>

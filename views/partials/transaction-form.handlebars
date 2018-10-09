@@ -1,9 +1,12 @@
 <!-- transaction-form.handlebars -->
 
 <fieldset>
+    {{#if _id}}
+    <input type="hidden" name="charity" value="{{_id}}">
+    {{/if}}
     <div class="form-group">
         <label for="charity">Charity:</label><br>
-        <input id="charity" type="text" name="charity" value="{{charity}}"/>
+        <input id="charity" type="text" name="charityName" value="{{charityName}}"/>
     </div>
     <div class="form-group">
         <label for="ein">Charity's Tax ID Number / Employee Identification Number (EIN):</label><br>

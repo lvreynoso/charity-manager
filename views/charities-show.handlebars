@@ -25,8 +25,17 @@
             </div>
         </div>
         <div class="col-lg-4 text-center">
-            <form class="form-group" action="/charities/{{charity.ein}}/donate" method="get">
-                <button type="submit" class="btn btn-tertiary" name="donate">Donate!</button>
+            <form class="form-group" action="/charities/{{charity.ein}}/add" method="post">
+                <input type="hidden" name="charityName" value="{{charity.charityName}}">
+                <div class="account-selector">
+                    <select id="account-dropdown" class="" name="slug">
+                        {{#each accounts}}
+                        <option value="{{this.slug}}">{{this.name.first}} {{this.name.last}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-tertiary" name="donate">Add Charity</button>
             </form>
         </div>
     </div>
