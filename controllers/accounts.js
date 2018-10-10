@@ -37,32 +37,6 @@ export default function(app, database, modules) {
         })
     })
 
-    // async update account information
-    app.put('/accounts/:slug', async (req, res) => {
-        // turn req.body into an object that conforms to our model
-        let transformedEntry = {
-            name: {}
-        }
-        transformedEntry.name = {
-            first: req.body.firstName,
-            last: req.body.lastName
-        }
-        // get the account
-        let query = {
-            _id: req.body.mongoId
-        }
-        let account = await database.account.findOne(query).catch(err => console.log(err))
-        account.set(transformedEntry)
-
-        // create a new slug for the updated account
-        let mongoId = `${account._id}`.substring(`${account._id}`.length - 4)
-        account.slug = modules.slug(account.name.full + ' ' + mongoId)
-        // save the account to our db
-        let updatedAccount = await account.save().catch(err => console.log(err))
-
-        res.redirect(`/accounts/${account.slug}`)
-    })
-
     // async create account
     app.post('/accounts', async (req, res) => {
         // turn req.body into an object that conforms to our model
@@ -82,6 +56,33 @@ export default function(app, database, modules) {
 
         res.redirect(`/accounts`)
     })
+
+    // async update account information
+    app.put('/accounts/:slug', async (req, res) => {
+        // turn req.body into an object that conforms to our model
+        let transformedEntry = {
+            name: {}
+        }
+        transformedEntry.name = {
+            first: req.body.firstName,
+            last: req.body.lastName
+        }
+        // get the account
+        let query = {
+            slug: req.params.slug
+        }
+        let account = await database.account.findOne(query).catch(err => console.log(err))
+        account.set(transformedEntry)
+
+        // create a new slug for the updated account
+        let mongoId = `${account._id}`.substring(`${account._id}`.length - 4)
+        account.slug = modules.slug(account.name.full + ' ' + mongoId)
+        // save the account to our db
+        let updatedAccount = await account.save().catch(err => console.log(err))
+
+        res.redirect(`/accounts/${account.slug}`)
+    })
+
 
     app.delete('/accounts/:id', async (req, res) => {
         var query = {

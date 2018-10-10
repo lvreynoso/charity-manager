@@ -37,7 +37,10 @@ export default function(app, database, modules) {
 
     // async resourceful create
     app.post('/accounts/:slug/transactions', async (req, res) => {
-        let account = await database.account.findById(req.body.account)
+        let query = {
+            slug: req.params.slug
+        }
+        let account = await database.account.findOne(query)
             .catch(err => console.log(err))
         var newTransaction = req.body;
 
@@ -79,7 +82,10 @@ export default function(app, database, modules) {
 
     // resourceful update
     app.put('/accounts/:slug/transactions/:id', async (req, res) => {
-        let account = await database.account.findById(req.body.accountId)
+        let query = {
+            slug: req.params.slug
+        }
+        let account = await database.account.findOne(query)
             .catch(err => console.log(err))
         var editedDonation = account.donations.id(req.params.id)
         var updatedInfo = req.body;
@@ -89,8 +95,10 @@ export default function(app, database, modules) {
             updatedInfo.date = new Date(req.body.day + ' ' + req.body.month + ', ' + req.body.year);
         }
 
-        editedDonation.set(updatedInfo);
-        editedDonation.markModified('date');
+        editedDonation.set(updatedInfo)
+            .catch(err => console.log(err))
+        editedDonation.markModified('date')
+            .catch(err => console.log(err))
 
         // sort donations by date
         account.donations.sort(function(a, b) {
@@ -110,9 +118,13 @@ export default function(app, database, modules) {
 
     // resourceful destroy
     app.delete('/accounts/:slug/transactions/:id', async (req, res) => {
-        let account = await database.account.findById(req.body.accountId)
+        let query = {
+            slug: req.params.slug
+        }
+        let account = await database.account.findOne(query)
             .catch(err => console.log(err))
-        account.donations.id(req.params.id).remove();
+        account.donations.id(req.params.id).remove()
+            .catch(err => console.log(err))
         let response = await account.save().catch(err => console.log(err))
         res.redirect(`/accounts/${account.slug}`)
     })
