@@ -6,7 +6,7 @@
     "scripts": {
         "babel-node": "NODE_ENV=development babel-node",
         "start": "nodemon --exec npm run babel-node -- ./server.js",
-        "test": "mocha --require babel-core/register --exit test/test*.js"
+        "test": "mocha --require @babel/polyfill --require @babel/register"
     },
     "repository": {
         "type": "git",
@@ -33,6 +33,7 @@
         "@babel/core": "^7.1.2",
         "@babel/node": "^7.0.0",
         "@babel/preset-env": "^7.1.0",
+        "@babel/register": "^7.0.0",
         "chai": "^4.2.0",
         "chai-http": "^4.2.0",
         "dotenv": "^6.0.0",
