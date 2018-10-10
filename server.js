@@ -27,7 +27,7 @@ import User from './models/user.js'
 import Charity from './models/charity.js'
 
 // library
-import CharityNavigator from './lib/charity-navigator.js'
+import CharityNavigator from './api/charity-navigator.js'
 let charityNav = new CharityNavigator(process.env.CHARITY_NAV_APP_ID,
     process.env.CHARITY_NAV_API_KEY, process.env.CHARITY_NAV_BASE_URL)
 
