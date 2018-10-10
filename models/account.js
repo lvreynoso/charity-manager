@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 // subdocument of Account
-var DonationSchema = new Schema({
+let DonationSchema = new Schema({
     account: { type: Schema.Types.ObjectId,  ref: 'Account' },
     amount: { type: Number, min: 0.01},
     date: { type: Date, default: Date.now },
@@ -15,7 +15,7 @@ var DonationSchema = new Schema({
 }, { timestamps: true });
 
 // subdocument of Account
-var RecurringSchema = new Schema({
+let RecurringSchema = new Schema({
     account: { type: Schema.Types.ObjectId,  ref: 'Account' },
     amount: { type: Number, min: 0.01},
     interval: { type: Date, default: Date.now }, // needs to be a more complex way to figure out the interval
@@ -24,7 +24,7 @@ var RecurringSchema = new Schema({
 }, { timestamps: true });
 
 // main document
-var AccountSchema = new Schema({
+let AccountSchema = new Schema({
     name: {
         first: String,
         last: String

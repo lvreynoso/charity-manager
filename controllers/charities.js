@@ -7,104 +7,82 @@ export default function(app, database, modules) {
         res.render('charities')
     })
 
-    // show search results
-    app.post('/charities/search', (req, res) => {
-        modules.axios.get(modules.charityNavigator.collection('10', '1', req.body.search))
-            .then(search => {
-                res.render('charities-search', {
-                    search: search
-                })
+    // async show search results
+    app.post('/charities/search', async (req, res) => {
+        try {
+            let search = await modules.axios.get(modules.charityNavigator.collection('10', '1', req.body.search))
+            res.render('charities-search', {
+                search: search
             })
-            .catch(error => {
-                console.log(error);
-                res.render('charities-search', {
-                    error: error,
-                    query: req.body.search
-                })
-            })
-    })
-
-    // show details for a single charity
-    app.get('/charities/:ein', (req, res, next) => {
-        if (req.params.ein == 'test') {
-            next();
-        }
-        modules.axios.get(modules.charityNavigator.organization(req.params.ein))
-            .then(response => {
-                database.account.find().then(accounts => {
-                    res.render('charities-show', {
-                        charity: response.data,
-                        accounts: accounts
-                    })
-                })
-            })
-            .catch(error => {
-                console.log(error);
-            })
-    })
-
-    // add a charity to an account
-    app.post('/charities/:ein/add', (req, res) => {
-        // check if we already have the charity in the local database
-        let charityQuery = {
-            ein: req.params.ein
-        }
-        database.charity.countDocuments(charityQuery)
-        .then(count => {
-            if (count == 0) {
-                let newCharity = { name: req.body.charityName, ein: req.params.ein }
-                database.charity.create(newCharity)
-                .then(charity => {
-                    addToAccount(charity)
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-            } else {
-                database.charity.findOne(charityQuery)
-                .then(charity => {
-                    addToAccount(charity)
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-            }
-        })
-        .catch(error => {
+        } catch (error) {
             console.log(error);
-        })
-
-        // associate the charity with the account
-        function addToAccount(charity) {
-            let accountQuery = { slug: req.body.slug }
-            database.account.findOne(accountQuery)
-            .populate('charities')
-            .then(account => {
-                // check if the charity is already associated with the account
-                let uniqueCharity = true
-                account.charities.forEach(function(element) {
-                    if (String(element._id) == String(charity._id)) {
-                        uniqueCharity = false
-                    }
-                })
-                if (uniqueCharity) {
-                    account.charities.push(charity)
-                }
-                account.save()
-                .then(savedAccount => {
-                    redirectToAccount(account.slug)
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-            })
-            .catch(error => {
-                console.log(error);
+            res.render('charities-search', {
+                error: error,
+                query: req.body.search
             })
         }
+    })
 
-        function redirectToAccount(slug) {
-            res.redirect(`/accounts/${slug}`)
+    // async show details for a single charity
+    app.get('/charities/:ein', async (req, res, next) => {
+        try {
+            if (req.params.ein == 'test') {
+                next();
+            }
+            let response = await modules.axios.get(modules.charityNavigator.organization(req.params.ein))
+            let accounts = await database.account.find()
+            res.render('charities-show', {
+                charity: response.data,
+                accounts: accounts
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    })
+
+    // async add a charity to an account
+    app.post('/charities/:ein/add', async (req, res) => {
+        try {
+            let charityQuery = {
+                ein: req.params.ein
+            }
+            // check if we already have a local document in the db to represent
+            // the charity
+            let count = await database.charity.countDocuments(charityQuery)
+            let charity = {}
+            if (count == 0) {
+                let newCharity = {
+                    name: req.body.charityName,
+                    ein: req.params.ein
+                }
+                charity = await database.charity.create(newCharity)
+            } else {
+                charity = await database.charity.findOne(charityQuery)
+            }
+
+            // find the selected account
+            let accountQuery = {
+                slug: req.body.slug
+            }
+            let account = await database.account.findOne(accountQuery).populate('charities')
+            // check if the account already contains the charity
+            // i can think of a way to do this while checking if the charity is
+            // in the db, but whatevs i'm short on time
+            let uniqueCharity = true
+            account.charities.forEach(function(element) {
+                if (`${element._id}` == `${charity._id}`) {
+                    uniqueCharity = false
+                }
+            })
+            // add the charity to the account
+            if (uniqueCharity) {
+                account.charities.push(charity)
+            }
+            let updatedAccount = await account.save()
+
+            res.redirect(`/accounts/${updatedAccount.slug}`)
+        } catch(error) {
+            console.log(error);
         }
     })
 

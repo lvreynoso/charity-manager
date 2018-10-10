@@ -6,80 +6,97 @@ export default function(app, database, modules) {
         res.render('transactions');
     })
 
-    // resourceful new
-    app.get('/accounts/:slug/transactions/new', (req, res) => {
-        let query = { slug: req.params.slug }
-        database.account.findOne(query).then(account => {
-            res.render('transactions-new', { account: account })
-        })
+    // async resourceful new
+    app.get('/accounts/:slug/transactions/new', async (req, res) => {
+        try {
+            let query = {
+                slug: req.params.slug
+            }
+            let account = await database.account.findOne(query)
+            res.render('transactions-new', {
+                account: account
+            })
+        } catch (error) {
+            console.log(error);
+        }
     })
 
     // a truly great artist knows when to break convention
-    app.post('/accounts/:slug/transactions/new', (req, res) => {
-        let query = { slug: req.params.slug }
-        let charity = { _id: req.body._id, charityName: req.body.name, ein: req.body.ein }
-        database.account.findOne(query).then(account => {
-            res.render('transactions-new', { account: account, charity: charity })
-        })
+    // to be fixed with ajax
+    app.post('/accounts/:slug/transactions/new', async (req, res) => {
+        try {
+            let query = {
+                slug: req.params.slug
+            }
+            let charity = {
+                _id: req.body._id,
+                charityName: req.body.name,
+                ein: req.body.ein
+            }
+            let account = await database.account.findOne(query)
+            res.render('transactions-new', {
+                account: account,
+                charity: charity
+            })
+        } catch (error) {
+            console.log(error);
+        }
     })
 
-    // resourceful create
-    app.post('/accounts/:slug/transactions', (req, res) => {
-        database.account.findById(req.body.account).then(account => {
+    // async resourceful create
+    app.post('/accounts/:slug/transactions', async (req, res) => {
+        try {
+            let account = await database.account.findById(req.body.account)
             var newTransaction = req.body;
 
             // date fixing code
             if (req.body.fallback) {
                 newTransaction.date = new Date(req.body.day + ' ' + req.body.month + ', ' + req.body.year);
             }
-
             account.donations.push(newTransaction);
-            account.save().then(savedAccount => {
-                res.redirect(`/accounts/${account.slug}`)
-            }).catch(err => {
-                console.log(err.message);
-            })
-        }).catch(err => {
-            console.log(err.message);
-        })
-    })
 
-    // resourceful show
-    app.get('/transactions/:id', (req, res) => {
-        //console.log("transaction show");
-        database.account.findById(req.accountId).then(account => {
-            account.transactions.findById(req.params.id).then(transaction => {
-                res.render('transactions-show', {
-                    account: account,
-                    transaction: transaction
-                })
-            }).catch(err => {
-                console.log(err.message);
+            // sort donations by date
+            account.donations.sort(function(a, b) {
+                if (a.date.getTime() < b.date.getTime()) {
+                    return 1;
+                }
+                if (a.date.getTime() > b.date.getTime()) {
+                    return -1;
+                }
+
+                return 0;
             })
-        }).catch(err => {
-            console.log(err.message);
-        })
+            // save the account
+            let updatedAccount = await account.save()
+            // redirect back to the account's show page
+            res.redirect(`/accounts/${account.slug}`)
+        } catch (error) {
+            console.log(error);
+        }
+
     })
 
     // resourceful edit
-    app.get('/accounts/:slug/transactions/:id/edit', (req, res) => {
-        //console.log("transaction edit");
-        let query = { slug: req.params.slug }
-        database.account.findOne(query).then(account => {
+    app.get('/accounts/:slug/transactions/:id/edit', async (req, res) => {
+        try {
+            let query = {
+                slug: req.params.slug
+            }
+            let account = await database.account.findOne(query)
             var transaction = account.donations.id(req.params.id);
             res.render('transactions-edit', {
                 account: account,
                 transaction: transaction
             })
-        }).catch(err => {
-            console.log(err.message);
-        })
+        } catch (error) {
+            console.log(error);
+        }
     })
 
     // resourceful update
-    app.put('/accounts/:slug/transactions/:id', (req, res) => {
-        //console.log("transaction update");
-        database.account.findById(req.body.accountId).then(account => {
+    app.put('/accounts/:slug/transactions/:id', async (req, res) => {
+        try {
+            let account = await database.account.findById(req.body.accountId)
             var editedDonation = account.donations.id(req.params.id)
             var updatedInfo = req.body;
 
@@ -90,26 +107,37 @@ export default function(app, database, modules) {
 
             editedDonation.set(updatedInfo);
             editedDonation.markModified('date');
-            account.save().then(response => {
-                res.redirect(`/accounts/${account.slug}`);
+
+            // sort donations by date
+            account.donations.sort(function(a, b) {
+                if (a.date.getTime() < b.date.getTime()) {
+                    return 1;
+                }
+                if (a.date.getTime() > b.date.getTime()) {
+                    return -1;
+                }
+
+                return 0;
             })
-        }).catch(err => {
-            console.log(err.message);
-        })
+
+            let response = await account.save()
+            res.redirect(`/accounts/${account.slug}`);
+
+        } catch (error) {
+            console.log(error);
+        }
     })
 
     // resourceful destroy
-    app.delete('/accounts/:slug/transactions/:id', (req, res) => {
-        database.account.findById(req.body.accountId).then(account => {
+    app.delete('/accounts/:slug/transactions/:id', async (req, res) => {
+        try {
+            let account = await database.account.findById(req.body.accountId)
             account.donations.id(req.params.id).remove();
-            account.save().then(response => {
-                res.redirect(`/accounts/${account.slug}`)
-            }).catch(err => {
-                console.log(err.message);
-            })
-        }).catch(err => {
-            console.log(err.message);
-        })
+            let response = await account.save()
+            res.redirect(`/accounts/${account.slug}`)
+        } catch (error) {
+            console.log(error);
+        }
     })
 
 

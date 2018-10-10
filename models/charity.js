@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-var CharitySchema = new Schema({
+let CharitySchema = new Schema({
     name: String,
     ein: Number
 });

@@ -19,7 +19,6 @@ import index from './controllers/index.js'
 import admin from './controllers/admin.js'
 import accounts from './controllers/accounts.js'
 import transactions from './controllers/transactions.js'
-import dashboard from './controllers/dashboard.js'
 import charities from './controllers/charities.js'
 
 // models
@@ -56,13 +55,13 @@ mongoose.connect('mongodb://localhost/charity-manager', {
 });
 
 // inject those dependencies
-var database = {
+let database = {
     user: User,
     account: Account,
     charity: Charity,
 }
 
-var modules = {
+let modules = {
     slug: slug,
     axios: axios,
     charityNavigator: charityNav
@@ -70,7 +69,7 @@ var modules = {
 
 // face the world
 const hotPort = app.get('port')
-var server = app.listen(hotPort, () => {
+let server = app.listen(hotPort, () => {
     console.log(`App listening on port ${hotPort}!`)
 })
 
@@ -78,7 +77,6 @@ var server = app.listen(hotPort, () => {
 index(app, database, modules);
 admin(app, database, modules);
 transactions(app, database, modules);
-dashboard(app, database, modules);
 accounts(app, database, modules);
 charities(app, database, modules);
 

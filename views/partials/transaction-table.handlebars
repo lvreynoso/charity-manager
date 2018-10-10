@@ -22,7 +22,7 @@
                 <form action="/accounts/{{../slug}}/transactions/{{this._id}}?_method=DELETE" method="POST">
                     <fieldset>
                         <input type="hidden" name="accountId" value={{this.account}}>
-                        <td><button class="form-group btn btn-secondary" type="submit" name="donationId" value="{{this._id}}">Delete</button>
+                        <td><button class="form-group btn btn-danger" type="submit" name="donationId" value="{{this._id}}">Delete</button>
                     </fieldset>
                 </form>
             </tr>
