@@ -20,7 +20,8 @@ export default function(app, database, modules) {
         let query = {
             slug: req.params.slug
         }
-        let account = await database.account.findOne(query).populate('charities').catch(err => console.log(err))
+        let account = await database.account.findOne(query).populate('charities')
+            .catch(err => console.log(err))
         res.render('accounts-show', {
             account: account
         })

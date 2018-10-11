@@ -42,7 +42,7 @@ export default function(app, database, modules) {
         }
         let account = await database.account.findOne(query)
             .catch(err => console.log(err))
-        var newTransaction = req.body;
+        let newTransaction = req.body;
 
         // date fixing code
         if (req.body.fallback) {
@@ -73,7 +73,7 @@ export default function(app, database, modules) {
             slug: req.params.slug
         }
         let account = await database.account.findOne(query).catch(err => console.log(err))
-        var transaction = account.donations.id(req.params.id);
+        let transaction = account.donations.id(req.params.id);
         res.render('transactions-edit', {
             account: account,
             transaction: transaction
@@ -87,8 +87,8 @@ export default function(app, database, modules) {
         }
         let account = await database.account.findOne(query)
             .catch(err => console.log(err))
-        var editedDonation = account.donations.id(req.params.id)
-        var updatedInfo = req.body;
+        let editedDonation = account.donations.id(req.params.id)
+        let updatedInfo = req.body
 
         // date fixing code
         if (req.body.fallback) {
@@ -96,9 +96,7 @@ export default function(app, database, modules) {
         }
 
         editedDonation.set(updatedInfo)
-            .catch(err => console.log(err))
         editedDonation.markModified('date')
-            .catch(err => console.log(err))
 
         // sort donations by date
         account.donations.sort(function(a, b) {
@@ -113,7 +111,7 @@ export default function(app, database, modules) {
         })
 
         let response = await account.save().catch(err => console.log(err))
-        res.redirect(`/accounts/${account.slug}`);
+        res.redirect(`/accounts/${response.slug}`);
     })
 
     // resourceful destroy
@@ -124,7 +122,6 @@ export default function(app, database, modules) {
         let account = await database.account.findOne(query)
             .catch(err => console.log(err))
         account.donations.id(req.params.id).remove()
-            .catch(err => console.log(err))
         let response = await account.save().catch(err => console.log(err))
         res.redirect(`/accounts/${account.slug}`)
     })
