@@ -6,7 +6,7 @@
     "scripts": {
         "babel-node": "babel-node",
         "dev": "nodemon --exec npm run babel-node -- ./server.js",
-        "start": "babel-watch -w views server.js",
+        "start": "npm run babel-node -- ./server.js",
         "test": "mocha --require @babel/polyfill --require @babel/register --exit",
         "build": "babel api controllers models server.js -d lib"
     },
@@ -21,13 +21,12 @@
     },
     "homepage": "https://github.com/lvreynoso/charity-manager#readme",
     "dependencies": {
-        "@babel/polyfill": "^7.0.0",
         "@babel/cli": "^7.1.2",
         "@babel/core": "^7.1.2",
         "@babel/node": "^7.0.0",
+        "@babel/polyfill": "^7.0.0",
         "@babel/preset-env": "^7.1.0",
         "@babel/register": "^7.0.0",
-        "babel-watch": "^2.0.7",
         "axios": "^0.18.0",
         "body-parser": "^1.18.3",
         "express": "^4.16.3",
