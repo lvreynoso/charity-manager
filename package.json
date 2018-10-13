@@ -22,7 +22,10 @@
     "homepage": "https://github.com/lvreynoso/charity-manager#readme",
     "dependencies": {
         "@babel/polyfill": "^7.0.0",
+        "@babel/core": "^7.1.2",
         "@babel/node": "^7.0.0",
+        "@babel/preset-env": "^7.1.0",
+        "@babel/register": "^7.0.0",
         "axios": "^0.18.0",
         "body-parser": "^1.18.3",
         "express": "^4.16.3",
