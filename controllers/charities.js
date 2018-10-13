@@ -2,7 +2,7 @@
 
 export default function(app, database, modules) {
 
-    // show all charities
+    // show charity search page
     app.get('/charities', (req, res) => {
         res.render('charities')
     })
@@ -13,7 +13,7 @@ export default function(app, database, modules) {
             .catch(err => {
                 console.log(err)
                 res.render('charities-search', {
-                    error: error,
+                    error: err,
                     query: req.body.search
                 })
             })

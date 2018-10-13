@@ -50,7 +50,8 @@ app.use(express.static('public'));
 app.use(methodOverride('_method'))
 
 // connect to our database
-mongoose.connect('mongodb://localhost/charity-manager', {
+let mongoUri = process.env.MONGODB_URI || 'mongodb://localhost/charity-manager'
+mongoose.connect(mongoUri, {
     useNewUrlParser: true
 });
 

@@ -45,8 +45,8 @@ export default function(app, database, modules) {
             name: {}
         }
         transformedEntry.name = {
-            first: req.body.firstName,
-            last: req.body.lastName
+            first: req.body.first,
+            last: req.body.last
         }
         // create the account
         let account = await database.account.create(transformedEntry).catch(err => console.log(err))
@@ -65,8 +65,8 @@ export default function(app, database, modules) {
             name: {}
         }
         transformedEntry.name = {
-            first: req.body.firstName,
-            last: req.body.lastName
+            first: req.body.first,
+            last: req.body.last
         }
         // get the account
         let query = {
