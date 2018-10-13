@@ -8,6 +8,6 @@ Super secret contractor project.
 * Make sure `mongod` is running.
 * Start with `npm start`.
 ## Testing
-* You can run automated tests using Mocha and Chai with `npm test`, but they don't work even though manual testing reveals everything to be fine so ¯\\\_(ツ)\_/¯.
+* You can run automated tests using Mocha and Chai with `npm test`.
 ## Browser Access
 `http://localhost:3000/`
