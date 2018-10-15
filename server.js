@@ -11,7 +11,7 @@ import mongoose from 'mongoose'
 import handlebars from 'express-handlebars'
 import path from 'path'
 import methodOverride from 'method-override'
-import slug from 'slug'
+import slug from 'slugify'
 import axios from 'axios'
 
 // controllers
