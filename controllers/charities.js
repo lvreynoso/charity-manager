@@ -86,39 +86,92 @@ export default function(app, database, modules) {
         res.redirect(`/accounts/${updatedAccount.slug}`)
     })
 
-    // test our charity navigator api wrapper
-    app.get('/charities/test', (req, res) => {
+    app.get('/charities/test', async (req, res) => {
+        // our test object that holds the test queries we are going to send
         let test = {
             result: {},
             collection: {},
             organization: {}
         };
-        test.result.query = modules.charityNavigator.test();
-        test.collection.query = modules.charityNavigator.collection('10', '1', 'fire')
-        modules.axios.get(modules.charityNavigator.collection('10', '1', 'fire'))
-            .then(collection => {
-                test.collection.response = collection;
-                test.organization.query = modules.charityNavigator.organization('411867244');
-                modules.axios.get(modules.charityNavigator.organization('411867244')) // test ein
-                    .then(organization => {
-                        test.organization.response = organization;
-                        res.render('charities-test', {
-                            test: test
-                        })
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        test.organization.response = String(error.response.status + ' ' + error.response.statusText)
-                        res.render('charities-test', {
-                            test: test
-                        })
-                    })
+        // build a basic query string to test if we can access the class methods correctly
+        test.result.query = modules.charityNavigator.test()
+
+        // test the collection() function
+        // should build the proper URL string for the query we want
+        // this is supposed to return a list of charities that are relevant
+        // to our query, structured according to the number of results per page
+        // and page number that we pass to it
+        try {
+            test.collection.query = modules.charityNavigator.collection('10', '1', 'fire')
+            const collection = await modules.axios.get(test.collection.query)
+
+            test.collection.response = collection; 
+
+        // If this doesn't work, log the error and break out of the function
+        } catch (error) {
+            console.log(error);
+            test.collection.response = String(error.response.status + ' ' + error.response.statusText)
+            return res.render('charities-test', {
+                test: test
             })
-            .catch(error => {
-                console.log(error);
-                res.render('charities-test', {
-                    test: test
-                })
+        }
+        
+        // test the organization() function
+        // this should build the proper URL string to get information on a single
+        // charity, based on the EIN we pass to it.
+        try {
+            test.organization.query = modules.charityNavigator.organization('411867244');
+            const organization = modules.axios.get(test.organization.query) // test ein 
+        
+            test.organization.response = organization;
+
+            // tests done, render the page
+            res.render('charities-test', {
+                test: test
             })
+        // If this doesn't work, log the error and break out of the function
+        } catch (error) {
+            console.log(error);
+            test.organization.response = String(error.response.status + ' ' + error.response.statusText)
+            return res.render('charities-test', {
+                test: test
+            })
+        }
     })
+
+    // test our charity navigator api wrapper
+    // app.get('/charities/test', (req, res) => {
+    //     let test = {
+    //         result: {},
+    //         collection: {},
+    //         organization: {}
+    //     };
+    //     test.result.query = modules.charityNavigator.test();
+    //     test.collection.query = modules.charityNavigator.collection('10', '1', 'fire')
+    //     modules.axios.get(modules.charityNavigator.collection('10', '1', 'fire'))
+    //         .then(collection => {
+    //             test.collection.response = collection;
+    //             test.organization.query = modules.charityNavigator.organization('411867244');
+    //             modules.axios.get(modules.charityNavigator.organization('411867244')) // test ein
+    //                 .then(organization => {
+    //                     test.organization.response = organization;
+    //                     res.render('charities-test', {
+    //                         test: test
+    //                     })
+    //                 })
+    //                 .catch(error => {
+    //                     console.log(error);
+    //                     test.organization.response = String(error.response.status + ' ' + error.response.statusText)
+    //                     res.render('charities-test', {
+    //                         test: test
+    //                     })
+    //                 })
+    //         })
+    //         .catch(error => {
+    //             console.log(error);
+    //             res.render('charities-test', {
+    //                 test: test
+    //             })
+    //         })
+    // })
 }
